@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template para criar instância EC2 com aplicação Flask
+
+Parameters:
+  VPC:
+    Type: String
+    Description: ID da VPC
+  PublicSubnet:
+    Type: String
+    Description: Subnet pública para a EC2
+
+Resources:
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Permitir acesso à aplicação Flask
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: FlaskSG
+
+  FlaskInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0953476d60561c955  # Amazon Linux 2 - Norte da Virgínia (verifique se mudou)
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      KeyName: projetodevops  # Substitua pela chave criada
+      Tags:
+        - Key: Name
+          Value: FlaskApp
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum update -y
+          yum install -y python3 git
+          cd /home/ec2-user
+          git clone https://github.com/jaquelineolimpio/Projeto_DevOps.git
+          cd Projeto_DevOps
+          pip3 install -r requirements.txt
+          python3 main.py &
+
+Outputs:
+  InstancePublicIP:
+    Description: IP público da instância
+    Value: !GetAtt FlaskInstance.PublicIp
+
+  FlaskAppURL:
+    Description: URL da aplicação Flask
+    Value: !Sub "http://${FlaskInstance.PublicDnsName}:5000"
