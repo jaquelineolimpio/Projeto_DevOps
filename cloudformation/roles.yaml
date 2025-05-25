@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: IAM Roles para EC2, CodeBuild e CodePipeline
+
+Resources:
+
+  # Role para a instância EC2 (acesso básico ao SSM, CloudWatch)
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: EC2InstanceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+      Path: /
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: EC2InstanceProfile
+      Roles:
+        - !Ref EC2InstanceRole
+
+  # Role para o CodeBuild
+  CodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CodeBuildServiceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                  - cloudformation:*
+                  - ec2:*
+                  - rds:*
+                  - codebuild:*
+                Resource: "*"
+
+  # Role para o CodePipeline
+  CodePipelineServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CodePipelineServiceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - codebuild:*
+                  - codedeploy:*
+                  - iam:PassRole
+                  - cloudformation:*
+                  - ec2:*
+                Resource: "*"
+
+Outputs:
+
+  EC2InstanceProfile:
+    Description: EC2 Instance Profile
+    Value: !Ref EC2InstanceProfile
+
+  CodeBuildServiceRole:
+    Description: IAM Role for CodeBuild
+    Value: !Ref CodeBuildServiceRole
+
+  CodePipelineServiceRole:
+    Description: IAM Role for CodePipeline
+    Value: !Ref CodePipelineServiceRole

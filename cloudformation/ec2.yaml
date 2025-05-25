@@ -29,11 +29,11 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0953476d60561c955  # Amazon Linux 2 - Norte da Virgínia (verifique se mudou)
+      ImageId: ami-0953476d60561c955  # Amazon Linux 2 - Norte da Virgínia 
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
-      KeyName: projetodevops  # Substitua pela chave criada
+      KeyName: projetodevops 
       Tags:
         - Key: Name
           Value: FlaskApp
@@ -56,3 +56,9 @@ Outputs:
   FlaskAppURL:
     Description: URL da aplicação Flask
     Value: !Sub "http://${FlaskInstance.PublicDnsName}:5000"
+  
+  EC2SecurityGroupId:
+    Description: Security Group usado pela EC2
+    Value: !Ref EC2SecurityGroup
+    Export:
+      Name: EC2-SG-ID
