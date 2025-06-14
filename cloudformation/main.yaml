@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack principal que orquestra a criação dos recursos da aplicação com nested stacks
+
+Parameters:
+  TemplateBucket:
+    Type: String
+    Description: Nome do bucket S3 onde os templates estão armazenados (sem s3://)
+
+Resources:
+  NetworkStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}/vpc.yaml
+
+  IAMStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}/roles.yaml
+
+  ComputeStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}/ec2.yaml
+      Parameters:
+        VPCId: !GetAtt NetworkStack.Outputs.VPC
+        PublicSubnetId: !GetAtt NetworkStack.Outputs.PublicSubnet
+        InstanceRoleName: !GetAtt IAMStack.Outputs.InstanceRoleName
+        KeyName: projetodevops
+
+  DatabaseStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}/rds.yaml
+      Parameters:
+        VPCId: !GetAtt NetworkStack.Outputs.VPC
+        PrivateSubnetId: !GetAtt NetworkStack.Outputs.PrivateSubnet
+
+  StorageStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}/s3.yaml
+
+Outputs:
+  VPC:
+    Description: VPC criada
+    Value: !GetAtt NetworkStack.Outputs.VPC
+
+  EC2PublicIP:
+    Description: IP público da instância EC2
+    Value: !GetAtt ComputeStack.Outputs.InstancePublicIP
+
+  RDSEndpoint:
+    Description: Endpoint do banco de dados RDS
+    Value: !GetAtt DatabaseStack.Outputs.RDSEndpoint

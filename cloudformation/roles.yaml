@@ -49,6 +49,7 @@ Resources:
                   - logs:*
                   - cloudformation:*
                   - ec2:*
+                  - s3:*
                   - rds:*
                   - codebuild:*
                 Resource: "*"
@@ -77,6 +78,7 @@ Resources:
                   - iam:PassRole
                   - cloudformation:*
                   - ec2:*
+                  - s3:*
                 Resource: "*"
 
 Outputs:
