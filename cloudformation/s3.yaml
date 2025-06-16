@@ -5,7 +5,7 @@ Resources:
   TemplateBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: projeto-devops-templates-{{AWS::AccountId}}
+      BucketName: projeto-devops-templates
       VersioningConfiguration:
         Status: Enabled
       PublicAccessBlockConfiguration:
@@ -18,3 +18,6 @@ Outputs:
   BucketName:
     Description: projeto-devops-templates
     Value: !Ref TemplateBucket
+  BucketArn:
+    Description: ARN do bucket
+    Value: !GetAtt TemplatesBucket.Arn

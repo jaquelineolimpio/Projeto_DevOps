@@ -34,12 +34,7 @@ Resources:
       Parameters:
         VPCId: !GetAtt NetworkStack.Outputs.VPC
         PrivateSubnetId: !GetAtt NetworkStack.Outputs.PrivateSubnet
-
-  StorageStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub https://${TemplateBucket}/s3.yaml
-
+        
 Outputs:
   VPC:
     Description: VPC criada
