@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Roles iniciais para CodeBuild e CodePipeline
+ 
+Resources:
+ 
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: codebuild-infra-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildInlinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudformation:*
+                  - s3:*
+                  - logs:*
+                  - ec2:Describe*
+                  - rds:Describe*
+                Resource: "*"
+ 
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: codepipeline-infra-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: CodePipelineInlinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - codebuild:*
+                  - s3:*
+                  - iam:PassRole
+                  - cloudformation:*
+                Resource: "*"
+ 
+Outputs:
+  CodeBuildRoleArn:
+    Description: ARN da role do CodeBuild
+    Value: !GetAtt CodeBuildRole.Arn
+    Export:
+      Name: CodeBuildRoleArn
+ 
+  CodePipelineRoleArn:
+    Description: ARN da role do CodePipeline
+    Value: !GetAtt CodePipelineRole.Arn
+    Export:
+      Name: CodePipelineRoleArn

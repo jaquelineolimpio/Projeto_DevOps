@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Bucket S3 para armazenar artefatos do CodePipeline
+ 
+Resources:
+  PipelineArtifactsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: projeto-devops-artifacts
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+ 
+Outputs:
+  ArtifactsBucketName:
+    Description: Nome do bucket de artifacts do pipeline
+    Value: !Ref PipelineArtifactsBucket
+    Export:
+      Name: PipelineArtifactsBucketName
