@@ -10,17 +10,17 @@ Resources:
   NetworkStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}/vpc.yaml
+      TemplateURL: !Sub https://${TemplateBucket}/templates/vpc.yaml
 
   IAMStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}/roles.yaml
+      TemplateURL: !Sub https://${TemplateBucket}/templates/roles.yaml
 
   ComputeStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}/ec2.yaml
+      TemplateURL: !Sub https://${TemplateBucket}/templates/ec2.yaml
       Parameters:
         VPCId: !GetAtt NetworkStack.Outputs.VPC
         PublicSubnetId: !GetAtt NetworkStack.Outputs.PublicSubnet
@@ -30,7 +30,7 @@ Resources:
   DatabaseStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}/rds.yaml
+      TemplateURL: !Sub https://${TemplateBucket}/templates/rds.yaml
       Parameters:
         VPCId: !GetAtt NetworkStack.Outputs.VPC
         PrivateSubnetId: !GetAtt NetworkStack.Outputs.PrivateSubnet
