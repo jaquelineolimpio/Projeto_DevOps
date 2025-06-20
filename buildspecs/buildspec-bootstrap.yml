@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "🚀 Iniciando bootstrap da infraestrutura CI/CD..."
+  build:
+    commands:
+      - echo "✅ Criando bucket de artifacts do CodePipeline..."
+      - aws cloudformation deploy \
+          --template-file cloudformation/bootstrap/artifacts-bucket.yaml \
+          --stack-name stack-artifacts-bucket \
+          --capabilities CAPABILITY_NAMED_IAM
+      - echo "✅ Criando roles iniciais para CodeBuild e CodePipeline..."
+      - aws cloudformation deploy \
+          --template-file cloudformation/bootstrap/iam-roles.yaml \
+          --stack-name stack-bootstrap-iam \
+          --capabilities CAPABILITY_NAMED_IAM
