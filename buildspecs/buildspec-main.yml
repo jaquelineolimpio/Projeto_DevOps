@@ -12,10 +12,10 @@ phases:
   build:
     commands:
       - echo "Subindo templates filhos para o bucket S3..."
-      - aws s3 cp cloudformation/vpc.yaml s3://$BUCKET_NAME/templates/vpc.yaml
-      - aws s3 cp cloudformation/rds.yaml s3://$BUCKET_NAME/templates/rds.yaml
-      - aws s3 cp cloudformation/roles.yaml s3://$BUCKET_NAME/templates/roles.yaml
-      - aws s3 cp cloudformation/ec2.yaml s3://$BUCKET_NAME/templates/ec2.yaml
+      - aws s3 cp cloudformation/infra/vpc.yaml s3://$BUCKET_NAME/templates/vpc.yaml
+      - aws s3 cp cloudformation/infra/rds.yaml s3://$BUCKET_NAME/templates/rds.yaml
+      - aws s3 cp cloudformation/infra/roles.yaml s3://$BUCKET_NAME/templates/roles.yaml
+      - aws s3 cp cloudformation/infra/ec2.yaml s3://$BUCKET_NAME/templates/ec2.yaml
 
       - echo "Criando stack principal com nested stacks..."
       - aws cloudformation deploy \
