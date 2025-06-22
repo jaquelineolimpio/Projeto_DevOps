@@ -10,7 +10,7 @@ Resources:
       RoleArn: !ImportValue CodePipelineRoleArn
       ArtifactStore:
         Type: S3
-        Location: projeto-devops-artifacts
+        Location: !ImportValue PipelineArtifactsBucketName
       Stages:
         - Name: Source
           Actions:
@@ -58,3 +58,9 @@ Resources:
               Configuration:
                 ProjectName: criar-infra-principal
               RunOrder: 1
+Outputs:
+  PipelineName:
+    Description: Nome da pipeline
+    Value: !Ref InfraPipeline
+    Export:
+      Name: InfraPipelineName  
