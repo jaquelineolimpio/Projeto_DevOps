@@ -1,14 +1,15 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: '2010-09-09' 
 Description: Criação dos projetos CodeBuild
- 
+
 Resources:
- 
+
   BuildCreateBucket:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: criar-bucket-s3
       Source:
         Type: CODEPIPELINE
+        BuildSpec: buildspec-bucket.yml
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:7.0
@@ -18,14 +19,14 @@ Resources:
         Type: CODEPIPELINE
       TimeoutInMinutes: 10
       Description: Projeto CodeBuild para criar bucket S3 via buildspec-bucket.yml
-      BuildSpec: buildspec-bucket.yml
- 
+
   BuildMainInfra:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: criar-infra-principal
       Source:
         Type: CODEPIPELINE
+        BuildSpec: buildspec-main.yml
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:7.0
@@ -35,4 +36,4 @@ Resources:
         Type: CODEPIPELINE
       TimeoutInMinutes: 20
       Description: Projeto CodeBuild para aplicar main.yaml via buildspec-main.yml
-      BuildSpec: buildspec-main.yml
+

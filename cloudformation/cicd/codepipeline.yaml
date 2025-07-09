@@ -26,7 +26,7 @@ Resources:
                 Owner: jaquelineolimpio
                 Repo: Projeto_DevOps
                 Branch: main
-                OAuthToken: '{{resolve:secretsmanager:GitHubToken:SecretString:token}}'
+                OAuthToken: arn:aws:secretsmanager:us-east-1:736638055194:secret:GitHub_Token-YjJR1i
               RunOrder: 1
  
         - Name: BuildBucket
